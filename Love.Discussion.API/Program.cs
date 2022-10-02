@@ -1,4 +1,5 @@
 using FluentValidation;
+using Love.Discussion.API.Middlewares;
 using Love.Discussion.Core;
 using Love.Discussion.Services;
 using Microsoft.AspNetCore.Diagnostics;
@@ -95,6 +96,20 @@ namespace Love.Discussion.API
             app.UseAuthorization();
             app.MapControllers();
             app.UseStaticFiles();
+
+            #region Setting up Middlewares
+            app.UseWhen(context => (context.Request.ContentType.Contains("json", StringComparison.CurrentCultureIgnoreCase)),
+                config =>
+                {
+                    config.Use(async (context, next) =>
+                    {
+                        context.Response.WriteAsync("Hello  Middleware no config");
+                        await next();
+                    });
+                });
+
+            app.UseDefaultResponseMiddleware();
+            #endregion
 
             #region Setting up exception handling
             if (app.Environment.IsDevelopment())
