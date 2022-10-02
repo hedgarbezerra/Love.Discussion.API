@@ -1,0 +1,18 @@
+﻿using FluentValidation;
+using Love.Discussion.Core.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Love.Discussion.Services.Validators
+{
+    public class UserValidator : AbstractValidator<User>
+    {
+        public UserValidator()
+        {
+
+        }
+    }
+}

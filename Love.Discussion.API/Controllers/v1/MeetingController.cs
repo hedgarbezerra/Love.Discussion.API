@@ -1,4 +1,9 @@
-﻿using Love.Discussion.Core.Interfaces;
+﻿using AutoMapper;
+using FluentValidation;
+using Love.Discussion.Core.Entities;
+using Love.Discussion.Core.Interfaces;
+using Love.Discussion.Core.Models;
+using Love.Discussion.Core.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,13 +21,17 @@ namespace Love.Discussion.API.Controllers.v1
     {
         private readonly IMeetingService _meetingService;
         private readonly IFeatureManager _featureManager;
-        private ILogger _logger;
+        private readonly ILogger<MeetingController> _logger;
+        private readonly IMapper _mapper;
+        private readonly IValidator<Meeting> _meetingValidator;
 
-        public MeetingController(IFeatureManager featureManager, ILogger logger, IMeetingService meetingService)
+        public MeetingController(IFeatureManager featureManager, ILogger<MeetingController> logger, IMeetingService meetingService, IMapper mapper, IValidator<Meeting> meetingValidator)
         {
             _featureManager = featureManager;
             _logger = logger;
             _meetingService = meetingService;
+            _mapper = mapper;
+            _meetingValidator = meetingValidator;
         }
 
         [HttpGet]
@@ -30,10 +39,27 @@ namespace Love.Discussion.API.Controllers.v1
         public IActionResult Get(int id)
         {
             var meeting = _meetingService.GetMeeting(id);
-            
             if (meeting is not null)
-                return Ok(meeting);
+            {
+                var mappedMeeting = _mapper.Map<MeetingDto>(meeting);
+                var result = new DefaultResponse<MeetingDto>();
+                return Ok(mappedMeeting);
+            }
             return NoContent();
+        }
+
+        [HttpPost]
+        public IActionResult Post([FromBody]MeetingDto meetingDto)
+        {
+            var meeting = _mapper.Map<Meeting>(meetingDto);
+            var validationResult = _meetingValidator.Validate(meeting);
+
+            if (validationResult.IsValid)
+            {
+                return Ok(true);
+            }
+            else
+                return Ok(false);  
         }
     }
 }

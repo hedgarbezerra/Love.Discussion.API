@@ -1,11 +1,13 @@
+using FluentValidation;
 using Love.Discussion.Core;
+using Love.Discussion.Services;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.FeatureManagement;
 using Microsoft.FeatureManagement.FeatureFilters;
 using Serilog;
-using Serilog.Context;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -48,6 +50,10 @@ namespace Love.Discussion.API
             builder.Services.AddFeatureManagement()
                 .AddFeatureFilter<TimeWindowFilter>();
             builder.Services.AddCors();
+
+            var servicesAssembly = Assembly.GetAssembly(typeof(MeetingService));
+            builder.Services.AddValidatorsFromAssembly(servicesAssembly);
+            builder.Services.AddAutoMapper(servicesAssembly);
             #endregion
 
             #region Defining content negotiation
@@ -71,22 +77,24 @@ namespace Love.Discussion.API
                 });
             #endregion
 
-            #region Build configuration
-            var app = builder.Build();
-
-            app.UseHttpsRedirection();
-            app.UseAzureAppConfiguration();
-            app.UseAuthorization();
-            app.MapControllers();
-            app.UseStaticFiles();
-
             #region setting up logging 
 
             Log.Logger = new LoggerConfiguration()
                       .Enrich.FromLogContext()
                       .WriteTo.File(hostingEnvironment.WebRootPath + "\\logs\\log_.txt", rollingInterval: RollingInterval.Minute)
                       .CreateLogger();
+            builder.Host.UseSerilog();
             #endregion
+
+            #region Build configuration
+            var app = builder.Build();
+
+            app.UseHttpsRedirection();
+            app.UseAzureAppConfiguration();
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.MapControllers();
+            app.UseStaticFiles();
 
             #region Setting up exception handling
             if (app.Environment.IsDevelopment())
@@ -110,12 +118,12 @@ namespace Love.Discussion.API
                     await context.Response.WriteAsync(JsonSerializer.Serialize(response));
                 }));
             }
-            app.Use(async (httpContext, next) =>
-            {
-                var userName = httpContext.User.Identity.IsAuthenticated ? httpContext.User.Identity.Name : string.Empty;
-                LogContext.PushProperty("Username", userName);
-                await next.Invoke();
-            });
+            //app.Use(async (httpContext, next) =>
+            //{
+            //    var userName = httpContext.User.Identity.IsAuthenticated ? httpContext.User.Identity.Name : string.Empty;
+            //    LogContext.PushProperty("Username", userName);
+            //    await next.Invoke();
+            //});
             #endregion
 
             #region Setup Swagger
