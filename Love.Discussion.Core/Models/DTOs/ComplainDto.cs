@@ -8,10 +8,10 @@ namespace Love.Discussion.Core.Models.DTOs
 {
     public class ComplainDto
     {
-        public string Title { get; set; }
-        public string Text { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Text { get; set; } = string.Empty;
         public bool IsPositive { get; set; }
-        public string Extra { get; set; }
+        public string Extra { get; set; } = string.Empty;
         public DateTime OccurenceDate { get; set; }
     }
 }

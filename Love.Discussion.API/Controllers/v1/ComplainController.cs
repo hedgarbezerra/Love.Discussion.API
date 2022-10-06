@@ -17,12 +17,12 @@ namespace Love.Discussion.API.Controllers.v1
     public class ComplainController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IValidator<Complain> _complainValidator;
+        private readonly IValidator<ComplainDto> _complainValidator;
         private readonly IMeetingService _meetingService;
         private readonly IFeatureManager _featureManager;
         private readonly ILogger<ComplainController> _logger;
 
-        public ComplainController(IMapper mapper, IMeetingService meetingService, IFeatureManager featureManager, ILogger<ComplainController> logger, IValidator<Complain> complainValidator)
+        public ComplainController(IMapper mapper, IMeetingService meetingService, IFeatureManager featureManager, ILogger<ComplainController> logger, IValidator<ComplainDto> complainValidator)
         {
             _mapper = mapper;
             _meetingService = meetingService;
@@ -47,8 +47,8 @@ namespace Love.Discussion.API.Controllers.v1
         [HttpPost]
         public IActionResult Post([FromBody] ComplainDto complainDto)
         {
+            var validationResult = _complainValidator.Validate(complainDto);
             var complain = _mapper.Map<Complain>(complainDto);
-            var validationResult = _complainValidator.Validate(complain);
 
             if (validationResult.IsValid)
                 return Ok(true);

@@ -23,9 +23,9 @@ namespace Love.Discussion.API.Controllers.v1
         private readonly IFeatureManager _featureManager;
         private readonly ILogger<MeetingController> _logger;
         private readonly IMapper _mapper;
-        private readonly IValidator<Meeting> _meetingValidator;
+        private readonly IValidator<MeetingDto> _meetingValidator;
 
-        public MeetingController(IFeatureManager featureManager, ILogger<MeetingController> logger, IMeetingService meetingService, IMapper mapper, IValidator<Meeting> meetingValidator)
+        public MeetingController(IFeatureManager featureManager, ILogger<MeetingController> logger, IMeetingService meetingService, IMapper mapper, IValidator<MeetingDto> meetingValidator)
         {
             _featureManager = featureManager;
             _logger = logger;
@@ -51,8 +51,11 @@ namespace Love.Discussion.API.Controllers.v1
         [HttpPost]
         public IActionResult Post([FromBody]MeetingDto meetingDto)
         {
+            var validationResult = _meetingValidator.Validate(meetingDto);
+            if (!validationResult.IsValid)
+                return Ok(validationResult.Errors);
+
             var meeting = _mapper.Map<Meeting>(meetingDto);
-            var validationResult = _meetingValidator.Validate(meeting);
 
             if (validationResult.IsValid)
             {

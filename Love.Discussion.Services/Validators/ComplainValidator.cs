@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Love.Discussion.Services.Validators
 {
-    public class ComplainValidator : AbstractValidator<Complain>
+    public class ComplainValidator : AbstractValidator<ComplainDto>
     {
         public ComplainValidator()
         {
