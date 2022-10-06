@@ -98,15 +98,22 @@ namespace Love.Discussion.API
             app.UseStaticFiles();
 
             #region Setting up Middlewares
-            app.UseWhen(context => (context.Request.ContentType.Contains("json", StringComparison.CurrentCultureIgnoreCase)),
-                config =>
-                {
-                    config.Use(async (context, next) =>
-                    {
-                        context.Response.WriteAsync("Hello  Middleware no config");
-                        await next();
-                    });
-                });
+            //app.UseWhen(context =>
+            //    {
+            //        var contentyType = context.Request?.ContentType;
+            //        if (contentyType is null)
+            //            return false;
+
+            //        return contentyType.Contains("json", StringComparison.CurrentCultureIgnoreCase);
+            //    },
+            //    config =>
+            //    {
+            //        config.Use(async (context, next) =>
+            //        {
+            //            context.Response.WriteAsync("Hello  Middleware no config");
+            //            await next();
+            //        });
+            //    });
 
             app.UseDefaultResponseMiddleware();
             #endregion

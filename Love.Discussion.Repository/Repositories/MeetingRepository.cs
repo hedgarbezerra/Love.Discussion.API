@@ -10,7 +10,7 @@ namespace Love.Discussion.Repository.Repositories
 {
     public class MeetingRepository : BaseRepository<Meeting>
     {
-        public MeetingRepository(LoveContext dbContext) : base(dbContext)
+        public MeetingRepository(LoveIdentityContext dbContext) : base(dbContext)
         {
         }
     }

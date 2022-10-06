@@ -1,11 +1,6 @@
 ﻿using AutoMapper;
-using Love.Discussion.Core.Entities;
 using Love.Discussion.Core.Models.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace Love.Discussion.Services.Mappings
 {
@@ -13,7 +8,7 @@ namespace Love.Discussion.Services.Mappings
     {
         public UserMapping()
         {
-            CreateMap<User, UserDto>();
+            CreateMap<UserDto, IdentityUser<int>>();
         }
     }
 }

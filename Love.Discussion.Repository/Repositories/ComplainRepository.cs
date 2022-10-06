@@ -10,7 +10,7 @@ namespace Love.Discussion.Repository.Repositories
 {
     public class ComplainRepository : BaseRepository<Complain>
     {
-        public ComplainRepository(LoveContext dbContext) : base(dbContext)
+        public ComplainRepository(LoveIdentityContext dbContext) : base(dbContext)
         {
         }
     }

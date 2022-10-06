@@ -1,4 +1,8 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using AutoMapper;
+using Love.Discussion.Core.Interfaces;
+using Love.Discussion.Core.Models.DTOs;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,12 +13,26 @@ using System.Threading.Tasks;
 
 namespace Love.Discussion.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
-        //public UserService(IWebHostEnvironment env)
-        //{
+        private readonly UserManager<IdentityUser<int>> _userManager;
+        private readonly IMapper _mapper;
 
-        //}
+        public UserService(UserManager<IdentityUser<int>> userManager, IMapper mapper)
+        {
+            _userManager = userManager;
+            _mapper = mapper;
+        }
+
+        public async Task<bool> Create(UserDto user)
+        {
+            var identityUser = _mapper.Map<IdentityUser<int>>(user);
+            var result = await _userManager.CreateAsync(identityUser);
+
+            return result.Succeeded;
+        }
+
+
         //public string GenerateToken()
         //{
         //    var tokenHandler = new JwtSecurityTokenHandler();

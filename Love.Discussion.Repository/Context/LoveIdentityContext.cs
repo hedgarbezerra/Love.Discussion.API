@@ -1,4 +1,6 @@
 ﻿using Love.Discussion.Core.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,12 +10,13 @@ using System.Threading.Tasks;
 
 namespace Love.Discussion.Repository.Context
 {
-    public class LoveContext : DbContext
+    public class LoveIdentityContext : IdentityDbContext<IdentityUser<int>, IdentityRole<int>, int>
     {
-        public LoveContext(DbContextOptions<LoveContext> options) : base(options) { }
-        public LoveContext() { }
+        public LoveIdentityContext(DbContextOptions<LoveIdentityContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
             #region mapeamento da entidade Meeting 
             builder.Entity<Meeting>(map =>
             {

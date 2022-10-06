@@ -7,6 +7,7 @@ using Love.Discussion.Services;
 using Love.Discussion.Services.Util;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +41,7 @@ namespace Love.Discussion.API
             services.AddTransient<IRepository<Complain>, ComplainRepository>();
             services.AddTransient<IRepository<Meeting>, MeetingRepository>();
             services.AddTransient<IMeetingService, MeetingService>();
+            services.AddTransient<IUserService, UserService>();
 
             services.AddSingleton<IHashing, Hashing>();
             services.AddSingleton<IEncryption, Encryption>(_ => new Encryption(configuration["EncryptionKey"]));
@@ -47,8 +49,13 @@ namespace Love.Discussion.API
         }
         public static void AddConfigurations(this IServiceCollection services, ConfigurationManager configurations)
         {
-            var dbConnectionString = configurations.GetConnectionString("SQLDb");
-            services.AddDbContext<LoveContext>(opt => opt.UseSqlServer(dbConnectionString));
+            //var dbConnectionString = configurations.GetConnectionString("SQLDb");
+            //services.AddDbContext<LoveContext>(opt => opt.UseSqlServer(dbConnectionString));
+
+            var identityDbConnectionString = configurations.GetConnectionString("SQLUsersDb");
+            services.AddDbContext<LoveIdentityContext>(opt => opt.UseSqlServer(identityDbConnectionString))
+                .AddIdentity<IdentityUser<int>, IdentityRole<int>>()
+                .AddEntityFrameworkStores<LoveIdentityContext>();
         }
 
         public static void AddInternalVersioning(this IServiceCollection services)

@@ -9,7 +9,7 @@ namespace Love.Discussion.Repository.Repositories
     {
         private readonly DbContext _dbContext;
 
-        public BaseRepository(LoveContext dbContext)
+        public BaseRepository(LoveIdentityContext dbContext)
         {
             _dbContext = dbContext;
         }

@@ -1,4 +1,6 @@
-﻿namespace Love.Discussion.API.Middlewares
+﻿using Newtonsoft.Json;
+
+namespace Love.Discussion.API.Middlewares
 {
     public class DefaultResponseMiddleware
     {
@@ -10,8 +12,12 @@
         }
         public async Task InvokeAsync(HttpContext context)
         {
-            if(context.Request.ContentType.Contains("json", StringComparison.CurrentCultureIgnoreCase))
+            var contentyType = context.Request?.ContentType;
+            if (contentyType is not null && contentyType.Contains("json", StringComparison.CurrentCultureIgnoreCase))
             {
+                //ler resultado
+                //pega ele como json
+                //
                 context.Response.WriteAsync("Hello  classe Middleware");
             }
 
