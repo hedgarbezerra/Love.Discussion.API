@@ -10,12 +10,23 @@ using System.Threading.Tasks;
 
 namespace Love.Discussion.Repository.Context
 {
-    public class LoveIdentityContext : IdentityDbContext<IdentityUser<int>, IdentityRole<int>, int>
+    public class LoveIdentityContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         public LoveIdentityContext(DbContextOptions<LoveIdentityContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            #region Mapping user
+
+            builder.Entity<User>(map =>
+            {
+                map.HasMany(p => p.Complains)
+                .WithOne(p => p.User)
+                .HasForeignKey(p => p.IdUser);
+            });
+
+            #endregion
 
             #region mapeamento da entidade Meeting 
             builder.Entity<Meeting>(map =>

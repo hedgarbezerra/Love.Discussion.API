@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Love.Discussion.Core.Entities;
 using Love.Discussion.Core.Models.DTOs;
 using Microsoft.AspNetCore.Identity;
 
@@ -8,7 +9,8 @@ namespace Love.Discussion.Services.Mappings
     {
         public UserMapping()
         {
-            CreateMap<UserDto, IdentityUser<int>>();
+            CreateMap<UserDto, User>();
+            CreateMap<User, UserDto>();
         }
     }
 }

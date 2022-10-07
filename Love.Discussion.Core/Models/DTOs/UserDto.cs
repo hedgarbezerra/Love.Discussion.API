@@ -14,5 +14,7 @@ namespace Love.Discussion.Core.Models.DTOs
         public string Password { get; set; } = string.Empty;
         public string PasswordConfirm { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
+        public DateTime BirthDate { get; set; } = DateTime.MinValue;
+        public DateTime DateAdded { get; set; } = DateTime.MinValue;
     }
 }

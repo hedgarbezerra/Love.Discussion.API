@@ -49,12 +49,12 @@ namespace Love.Discussion.API
         }
         public static void AddConfigurations(this IServiceCollection services, ConfigurationManager configurations)
         {
-            //var dbConnectionString = configurations.GetConnectionString("SQLDb");
-            //services.AddDbContext<LoveContext>(opt => opt.UseSqlServer(dbConnectionString));
-
             var identityDbConnectionString = configurations.GetConnectionString("SQLUsersDb");
             services.AddDbContext<LoveIdentityContext>(opt => opt.UseSqlServer(identityDbConnectionString))
-                .AddIdentity<IdentityUser<int>, IdentityRole<int>>()
+                .AddIdentity<User, IdentityRole<int>>(op =>
+                {
+                    op.Password.RequireNonAlphanumeric = true;
+                })
                 .AddEntityFrameworkStores<LoveIdentityContext>();
         }
 
@@ -93,7 +93,7 @@ namespace Love.Discussion.API
             #region JWT token bearer and authentication setup
 
             byte[] tokenKeyBytes = Encoding.ASCII.GetBytes(configuration["TokenKey"] ?? string.Empty);
-            if(tokenKeyBytes is not null && tokenKeyBytes.Length > 0)
+            if (tokenKeyBytes is not null && tokenKeyBytes.Length > 0)
             {
                 var hostingEnvironment = services.BuildServiceProvider().GetService<IWebHostEnvironment>();
 
@@ -120,7 +120,7 @@ namespace Love.Discussion.API
                     };
                 });
             }
-           
+
 
             #endregion
         }

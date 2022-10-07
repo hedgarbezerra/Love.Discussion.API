@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Love.Discussion.Core.Entities;
 using Love.Discussion.Core.Interfaces;
 using Love.Discussion.Core.Models.DTOs;
 using Microsoft.AspNetCore.Identity;
@@ -15,10 +16,10 @@ namespace Love.Discussion.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<IdentityUser<int>> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
-        public UserService(UserManager<IdentityUser<int>> userManager, IMapper mapper)
+        public UserService(UserManager<User> userManager, IMapper mapper)
         {
             _userManager = userManager;
             _mapper = mapper;
@@ -26,7 +27,7 @@ namespace Love.Discussion.Services
 
         public async Task<bool> Create(UserDto user)
         {
-            var identityUser = _mapper.Map<IdentityUser<int>>(user);
+            var identityUser = _mapper.Map<User>(user);
             var result = await _userManager.CreateAsync(identityUser);
 
             return result.Succeeded;

@@ -17,6 +17,8 @@ namespace Love.Discussion.Core.Entities
         public DateTime OccurenceDate { get; set; }
         public DateTime Date { get; set; } = DateTime.Now;
         public int IdMeeting { get; set; }
+        public int IdUser { get; set; }
+        public virtual User User { get; set; }
 
         [JsonIgnore]
         public virtual Meeting Meeting { get; set; }
